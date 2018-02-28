@@ -1,1 +1,1 @@
-web: my-go-server
+web: data-load-test

@@ -15,17 +15,13 @@ type Payload struct {
 }
 
 // Middleware function, which will be called for each request
-func (dp *Payload) AssignVariables(next http.Handler) http.Handler {
-  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func (dp *Payload) AssignVariables(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
     dp.Utility = vars["utility"]
     fmt.Fprintf(w, "Upload Utility %v\n", dp.Utility)
-    next.ServeHTTP(w, r)
-  })
 }
 
-func (dp *Payload) WriteFile(next http.Handler) http.Handler {
-  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func (dp *Payload) WriteFile(w http.ResponseWriter, r *http.Request) {
     switch dp.Utility {
       case "pgloader":
         loaderFile, loaderHandler, loaderErr := r.FormFile("loaderFile")
@@ -57,19 +53,13 @@ func (dp *Payload) WriteFile(next http.Handler) http.Handler {
       default: io.WriteString(w,"Utility is not matched\n")
     }
     io.WriteString(w, "Data File Uploaded\n")
-    next.ServeHTTP(w, r)
-  })
 }
 
-func (dp *Payload) DataLoader(next http.Handler) http.Handler {
-  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
+func (dp *Payload) DataLoader(w http.ResponseWriter, r *http.Request) {
     switch dp.Utility {
       case "pgloader": dp.PGLoader(w)
       case  "pgrestore": dp.PGRestore(w)
       case  "psql": dp.PGsql(w)
       default: io.WriteString(w,"Utility is not matched\n")
-    }
-    next.ServeHTTP(w, r)
-  })
+  }
 }

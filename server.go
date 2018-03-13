@@ -6,17 +6,18 @@ import (
     "net/http"
     "data-load-test/payload"
     "io"
+    "html/template"
 )
 
 func main() {
     r := mux.NewRouter()
+
+
+    // Handler function for uploading data files.
     r.HandleFunc("/upload/{utility}", UploadHandler)
 
-    dataPayload := new(payload.Payload)
-
-    r.Use(dataPayload.AssignVariables)
-    r.Use(dataPayload.WriteFile)
-    r.Use(dataPayload.DataLoader)
+    // Handler function for displaying Open Layers
+    r.HandleFunc("/display/{table}", DisplayHandler)
 
     // Catch All
     //r.PathPrefix("/").HandleFunc(catchAllHandler)
@@ -26,7 +27,27 @@ func main() {
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
+
+  dataPayload := new(payload.Payload)
+
+  dataPayload.AssignVariables(w,r)
+  dataPayload.WriteFile(w,r)
+  dataPayload.DataLoader(w,r)
+
   io.WriteString(w, "Data Loader run completed.\n")
+}
+
+type MapPageData struct {
+  PageTitle string
+}
+
+func DisplayHandler(w http.ResponseWriter, r *http.Request) {
+  io.WriteString(w, "Display Handler")
+  tmpl := template.Must(template.ParseFiles("web/map.html"))
+  data := MapPageData{
+			PageTitle: "Crunchy PostgreSQL PG Data Load Map Display",
+		}
+		tmpl.Execute(w, data)
 }
 
 // Redirect any requests to the base page to the Crunchy Data main page.

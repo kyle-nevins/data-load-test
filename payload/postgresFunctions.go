@@ -18,15 +18,30 @@ func (dp Payload) PGLoader(w http.ResponseWriter) {
 
   path := os.Getenv("HOME")+"/pgloader/loaderFile"
   read, err := ioutil.ReadFile(path)
-	if err != nil { panic(err) }
+	if err != nil { fmt.Println(err) }
+
+  vcap := os.Getenv("VCAP_SERVICES")
+	var vsMap map[string][]map[string]interface{}
+	err = json.Unmarshal([]byte(vcap), &vsMap)
+  if err != nil {	fmt.Println(err) }
+
+  uri := "postgresql://username:password@host:port/database"
+  if _, exist := vsMap["postgresql-9.5-odb"]; exist {
+    credsInterface := vsMap["postgresql-9.5-odb"][0]["credentials"]
+    uri = credsInterface.(map[string]interface{})["uri"].(string)
+  } else {
+    credsInterface := vsMap["postgresql-9.5"][0]["credentials"]
+    uri = credsInterface.(map[string]interface{})["uri"].(string)
+  }
+
 
 	newContents := strings.Replace(string(read),
     "postgresql://username:password@host:port/database",
-    os.Getenv("DATABASE_URL"),
+    uri,
     -1)
 
 	err = ioutil.WriteFile(path, []byte(newContents), 0)
-	if err != nil {	panic(err) }
+	if err != nil { fmt.Println(err) }
 
   command:= exec.Command(os.Getenv("HOME")+"/pgloader/pgloader",path)
   command.Dir = os.Getenv("HOME")+"/pgloader"

@@ -18,3 +18,7 @@ Using the PSQL utility
 1.
 
 Using the PGRestore Utility
+1. Upload the utility and bind the service instance to the app.
+1. PGRestore uses the following flags:
+  1. --clean --jobs=10 --no-owner --no-privileges
+1.  

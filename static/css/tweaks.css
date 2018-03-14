@@ -1,0 +1,45 @@
+
+@import "/static/css/bootstrap.min.css";
+
+.syslink {
+        color: inherit;
+}
+
+.perfdata {
+        font-size: 78px;
+        color: #999;
+        font-weight: 800;
+}
+
+.textContainer {
+        height: 306px;
+        line-height: 301px;
+}
+
+.textContainer h1 h2 {
+        vertical-align: middle;
+        display: inline-block;
+        position:relative;
+        top:50%;
+        transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+}
+
+.perf-panel-bar {
+        background-color: #428bca !important;
+        color: #fff;
+}
+
+.perf-panel-stat {
+        background-color: #d9edf7 !important;
+}
+
+.sysbadge {
+        background-color: #087b0d;
+}
+
+.list-group-item-success {
+        background-color: #fff;
+        color: inherit;
+}

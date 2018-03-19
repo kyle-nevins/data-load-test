@@ -8,7 +8,6 @@ import (
   "github.com/gorilla/mux"
   "encoding/json"
   "strconv"
-  //"strings"
 )
 
 type Payload struct {
@@ -54,10 +53,8 @@ func (dp *Payload) AssignVariables(w http.ResponseWriter, r *http.Request) {
 func (dp *Payload) WriteFile(w http.ResponseWriter, r *http.Request) {
     switch dp.Utility {
       case "pgloader":
-        loaderFile, loaderHandler, loaderErr := r.FormFile("loaderFile")
-        if loaderErr != nil { panic(loaderErr) }
-        dataFile, dataHandler, dataErr := r.FormFile("data")
-        if dataErr != nil { panic(dataErr) }
+        loaderFile, loaderHandler, _ := r.FormFile("loaderFile")
+        dataFile, dataHandler, _ := r.FormFile("data")
         defer loaderFile.Close()
         defer dataFile.Close()
         lf, le := os.OpenFile(os.Getenv("HOME")+"/pgloader/loaderFile", os.O_WRONLY|os.O_CREATE, 0666)
@@ -71,8 +68,7 @@ func (dp *Payload) WriteFile(w http.ResponseWriter, r *http.Request) {
         defer lf.Close()
         defer df.Close()
       case  "pgrestore": dp.PGRestore(w)
-        dataFile, dataHandler, dataErr := r.FormFile("data")
-        if dataErr != nil { panic(dataErr) }
+        dataFile, dataHandler, _ := r.FormFile("data")
         dp.payloadFile = dataHandler.Filename
         df, de := os.OpenFile(os.Getenv("HOME")+"/pg_restore/"+dataHandler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
         if de != nil { panic(de) }
@@ -80,8 +76,7 @@ func (dp *Payload) WriteFile(w http.ResponseWriter, r *http.Request) {
         io.Copy(df, dataFile)
         defer df.Close()
       case  "psql":
-        dataFile, dataHandler, dataErr := r.FormFile("data")
-        if dataErr != nil { panic(dataErr) }
+        dataFile, dataHandler, _ := r.FormFile("data")
         dp.payloadFile = dataHandler.Filename
         df, de := os.OpenFile(os.Getenv("HOME")+"/psql/"+dataHandler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
         if de != nil { panic(de) }

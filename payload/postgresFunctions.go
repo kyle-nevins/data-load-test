@@ -31,9 +31,8 @@ func (dp Payload) PGLoader(w http.ResponseWriter) {
   var out bytes.Buffer
   command.Stdout = &out
   err = command.Run()
-  if err != nil { fmt.Println(err) }
-
-  fmt.Fprintf(w,"%v",out.String())
+  if err != nil { log.Println(err) }
+  log.Println(out.String())
 }
 
 func (dp Payload) PGRestore(w http.ResponseWriter) {
@@ -62,9 +61,8 @@ func (dp Payload) PGRestore(w http.ResponseWriter) {
   var out bytes.Buffer
   command.Stdout = &out
   err := command.Run()
-  if err != nil { fmt.Println(err) }
-
-  fmt.Fprintf(w,"%v",out.String())
+  if err != nil { log.Println(err) }
+  log.Println(out.String())
 }
 
 func (dp Payload) PGsql(w http.ResponseWriter) {

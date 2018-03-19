@@ -28,8 +28,6 @@
     </div>
     <div class="container-fluid">
       <form enctype="multipart/form-data" method="post">
-        Run PSQL command prior to running the loader? <input type="checkbox" name="command"> <br/>
-        PSQL Command: <input type="text" name="psql-command" />
         Data File: <input type="file" name="data" /> <br/>
         <input type="hidden" name="token" value="{{.}}"/>
         <input type="submit" value="upload" />

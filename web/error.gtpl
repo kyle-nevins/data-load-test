@@ -1,4 +1,4 @@
-{{define "psql"}}
+{{define "error"}}
 
 <!DOCTYPE html>
 
@@ -13,7 +13,7 @@
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="/web/psql">PSQL</a></li>
+        <li><a href="/web/psql">PSQL</a></li>
         <li><a href="/web/pgrestore">PG Restore</a></li>
         <li><a href="/web/pgloader">PG Loader</a></li>
       </ul>
@@ -27,11 +27,7 @@
         <h1>PSQL Data Loader <small>Crunchy PostgreSQL </small></h1>
     </div>
     <div class="container-fluid">
-      <form enctype="multipart/form-data" method="post">
-        Data File: <input type="file" name="data" /> <br/>
-        <input type="hidden" name="token" value="{{.}}"/>
-        <input type="submit" value="upload" />
-      </form>
+      The data loader utility encountered an error. Please check the application logs.
     </div>
   </div>
 

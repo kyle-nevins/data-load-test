@@ -11,6 +11,8 @@ import (
     "strconv"
     "crypto/md5"
     "time"
+    "strings"
+    "path/filepath"
 )
 
 func main() {
@@ -46,12 +48,12 @@ func CLIHandler(w http.ResponseWriter, r *http.Request) {
 func WebHandler(w http.ResponseWriter, r *http.Request) {
 
   vars := mux.Vars(r)
+  token := fmt.Sprintf("%x", h.Sum(nil))
 
   if r.Method == "GET" {
     crutime := time.Now().Unix()
     h := md5.New()
     io.WriteString(h, strconv.FormatInt(crutime, 10))
-    token := fmt.Sprintf("%x", h.Sum(nil))
 
     t := template.New("upload")
 
@@ -69,10 +71,54 @@ func WebHandler(w http.ResponseWriter, r *http.Request) {
 
   } else {
     dataPayload := new(payload.Payload)
-    dataPayload.AssignVariables(w,r)
-    dataPayload.WriteFile(w,r)
-    dataPayload.DataLoader(w,r)
+
+    if validFile := ValidateFile(w,r,"data"); validFile {
+      dataPayload.AssignVariables(w,r)
+      dataPayload.WriteFile(w,r)
+      dataPayload.DataLoader(w,r)
+    } else {
+      if _, err := t.ParseFiles("web/error.gtpl", "web/layout.gtpl"); err != nil { panic(err) }
+      if err := t.ExecuteTemplate(w, "error", token); err != nil { panic(err) }
+    }
   }
+}
+
+func ValidateFile(w http.ResponseWriter, r *http.Request, formField string) bool {
+
+  validFile := false
+
+  file, header, err := r.FormFile(formField)
+  switch err {
+    case nil:
+      log.Println("File: ",header.Filename)
+      checkBuf := make([]byte, 512)
+    	if _, err := io.ReadAtLeast(file, checkBuf, 512); err != nil {
+    		log.Println("Check Buffer Error:", err)
+    	}
+      allowedExtensions := []string{".csv",".sql",".dump"}
+      fileExt := filepath.Ext(header.Filename)
+      for _, extensions := range allowedExtensions {
+        if extension == fileExt {
+          log.Println
+          if filetype := http.DetectContentType(checkBuf); (strings.Contains(filetype, "text/plain")) {
+            log.Println("File Type:", filetype)
+            validFile = true
+          } else {
+            log.Println("Not a text file:", filetype)
+          }
+        }
+      }
+    case http.ErrMissingFile:
+      log.Println("no file")
+    default:
+      log.Println("File Read Error:", err)
+  }
+
+  if ( mux.Vars(r)["utility"] == "pgloader" ) {
+    validFile = ValidateFile(w,r,"loaderFile")
+  }
+
+  return validFile
 }
 
 // Redirect any requests to the base page to the Crunchy Data main page.

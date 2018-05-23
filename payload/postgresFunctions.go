@@ -9,6 +9,7 @@ import (
   "strings"
   "os/exec"
   "bytes"
+  "log"
 )
 
 func (dp Payload) PGLoader(w http.ResponseWriter) {

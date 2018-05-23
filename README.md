@@ -14,9 +14,6 @@ Using the PGLoader utility
     - INTO postgresql://username:password@host:port/database?pgloader_data_load
 1. Command passed is `pgloader -f loaderFile`
 
-Using the PSQL utility
-1.
-
 Using the PGRestore Utility
 1. Upload the utility and bind the service instance to the app.
 1. PGRestore uses the following flags:

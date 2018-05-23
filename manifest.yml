@@ -1,6 +1,6 @@
 ---
 applications:
-  - name: go-server
+  - name: crunchy-data-loader
     memory: 512M
     disk_quota: 1GB
     command: data-load-test

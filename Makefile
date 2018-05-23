@@ -1,31 +1,35 @@
 # Makefile for data-load-test
 
-GO ?= go
-DEP ?= dep
+# Include the Makefile PCF construct
+include Makefile-pcf.mk
 
-GOPATH := $(CURDIR)/vendor:$(GOPATH)
-
-APPDIR = $(CURDIR)/app
-
-BINDIR = $(CURDIR)/bin
-BINNAME = data-load-test
-CONFDIR = $(CURDIR)/conf
+.PHONY: all
 
 SHELL = bash
 
-.PHONY: all check cf-broker cf-push
+app:	ensure-deps	cf-org-space
+	@$(CF_CMD) push
+	@$(CF_CMD) bind-service crunchy-data-loader $(DB_SERVICE_INSTANCE)
 
-all: build check cf-broker cf-push
+check: $(GO_CMD) $(DEP_CMD)
 
-build:
-	@mkdir -p $(BINDIR)
-	@$(DEP) ensure
-	@$(GO) build -o $(BINDIR)/$(BINNAME) $(CURDIR)/server.go
+# Check the DEP command
+$(DEP_CMD):
+	$(error Unable to find dep binary at DEP_CMD: $(DEP_CMD))
+	false
 
-check:
-	@which $(GO) >/dev/null
-	@which $(DEP) >/dev/null
+ensure-deps: check
+	$(DEP_CMD) ensure
 
-cf-broker: all
-	@cp $(BINDIR)/$(BINNAME) $(APPDIR)
-	@cp $(CONFDIR)/{manifest.yml,Procfile} $(APPDIR)
+# Check the GO command
+$(GO_CMD):
+	$(error Unable to find Go binary at GO_CMD: $(GO_CMD))
+	false
+
+cf:
+	@$(CF_CMD) dev status
+
+cf-org-space:
+	$(info INFO: Using $(CF_CMD), assuming CF DEV is configured)
+	@$(CF_CMD) login -a $(CF_URL) --skip-ssl-validation -u $(CF_USERNAME) -p $(CF_PASSWORD) -o $(CF_ORG) -s $(CF_SPACE)
+	@$(CF_CMD) service-access

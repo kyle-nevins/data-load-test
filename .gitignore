@@ -1,3 +1,9 @@
+# Vendor Folder
+vendor/
+
+# Lock File
+Gopkg.lock
+
 # Binaries for programs and plugins
 *.exe
 *.dll

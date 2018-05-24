@@ -24,19 +24,35 @@
 
   <div class="container">
     <div class="page-header">
-        <h1>PSQL Data Loader <small>Crunchy PostgreSQL </small></h1>
+        <h1>PGLoader Data Loader <small>Crunchy PostgreSQL </small></h1>
     </div>
     <div class="container-fluid">
       <form enctype="multipart/form-data" method="post">
-        Loader File: <input type="file" name="loaderFile" /> <br/>
-        Data File: <input type="file" name="data" /> <br/>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Loader File</span>
+          </div>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="inputGroupFile01" name="data">
+            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Data File</span>
+          </div>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="inputGroupFile01" name="data">
+            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+          </div>
+        </div>
         <input type="hidden" name="token" value="{{.}}"/>
         <input type="submit" value="upload" />
       </form>
     </div>
   </div>
 
-<script src="/static/js/jquery.js"></script>
+<script src="/js/jquery.js"></script>
 
 </body>
 </html>

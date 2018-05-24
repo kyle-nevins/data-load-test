@@ -28,14 +28,22 @@
     </div>
     <div class="container-fluid">
       <form enctype="multipart/form-data" method="post">
-        Data File: <input type="file" name="data" /> <br/>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Data File</span>
+          </div>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="inputGroupFile01" name="data">
+            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+          </div>
+        </div>
         <input type="hidden" name="token" value="{{.}}"/>
         <input type="submit" value="upload" />
       </form>
     </div>
   </div>
 
-<script src="/static/js/jquery.js"></script>
+<script src="/js/jquery.js"></script>
 
 </body>
 </html>

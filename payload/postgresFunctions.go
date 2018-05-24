@@ -9,6 +9,7 @@ import (
   "strings"
   "os/exec"
   "bytes"
+  "log"
 )
 
 func (dp Payload) PGLoader(w http.ResponseWriter) {
@@ -16,7 +17,7 @@ func (dp Payload) PGLoader(w http.ResponseWriter) {
 
   path := os.Getenv("HOME")+"/pgloader/loaderFile"
   read, err := ioutil.ReadFile(path)
-	if err != nil { fmt.Println(err) }
+	if err != nil { log.Panic(err) }
 
 	newContents := strings.Replace(string(read),
     "postgresql://username:password@host:port/database",
@@ -24,14 +25,14 @@ func (dp Payload) PGLoader(w http.ResponseWriter) {
     -1)
 
 	err = ioutil.WriteFile(path, []byte(newContents), 0)
-	if err != nil { fmt.Println(err) }
+	if err != nil { log.Panic(err) }
 
   command:= exec.Command(os.Getenv("HOME")+"/pgloader/pgloader",path)
   command.Dir = os.Getenv("HOME")+"/pgloader"
   var out bytes.Buffer
   command.Stdout = &out
   err = command.Run()
-  if err != nil { log.Println(err) }
+  if err != nil { log.Panic(err) }
   log.Println(out.String())
 }
 

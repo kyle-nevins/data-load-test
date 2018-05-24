@@ -70,22 +70,23 @@ func WebHandler(w http.ResponseWriter, r *http.Request) {
 
   vars := mux.Vars(r)
   h := md5.New()
-  crutime := time.Now().Unix()
-  io.WriteString(h, strconv.FormatInt(crutime, 10))
   token := fmt.Sprintf("%x", h.Sum(nil))
-  t := template.New("upload")
+  templ := template.New("upload")
 
   if r.Method == "GET" {
+    crutime := time.Now().Unix()
+    io.WriteString(h, strconv.FormatInt(crutime, 10))
+
     switch vars["utility"]{
       case "pgloader":
-        if _, err := t.ParseFiles("web/pgloader.gtpl", "web/layout.gtpl"); err != nil { panic(err) }
-        if err := t.ExecuteTemplate(w, "pgloader", token); err != nil { panic(err) }
+        if _, err := templ.ParseFiles("web/pgloader.gtpl", "web/layout.gtpl"); err != nil { panic(err) }
+        if err := templ.ExecuteTemplate(w, "pgloader", token); err != nil { panic(err) }
       case "psql":
-        if _, err := t.ParseFiles("web/psql.gtpl", "web/layout.gtpl"); err != nil { panic(err) }
-        if err := t.ExecuteTemplate(w, "psql", token); err != nil { panic(err) }
+        if _, err := templ.ParseFiles("web/psql.gtpl", "web/layout.gtpl"); err != nil { panic(err) }
+        if err := templ.ExecuteTemplate(w, "psql", token); err != nil { panic(err) }
       case "pgrestore":
-        if _, err := t.ParseFiles("web/pgrestore.gtpl", "web/layout.gtpl"); err != nil { panic(err) }
-        if err := t.ExecuteTemplate(w, "pgrestore", token); err != nil { panic(err) }
+        if _, err := templ.ParseFiles("web/pgrestore.gtpl", "web/layout.gtpl"); err != nil { panic(err) }
+        if err := templ.ExecuteTemplate(w, "pgrestore", token); err != nil { panic(err) }
       default:
         http.ServeFile(w, r, "web/notfound.html")
     }
@@ -97,8 +98,8 @@ func WebHandler(w http.ResponseWriter, r *http.Request) {
       dataPayload.WriteFile(w,r)
       dataPayload.DataLoader(w,r)
     } else {
-      if _, err := t.ParseFiles("web/error.gtpl", "web/layout.gtpl"); err != nil { panic(err) }
-      if err := t.ExecuteTemplate(w, "error", token); err != nil { panic(err) }
+      if _, err := templ.ParseFiles("web/error.gtpl", "web/layout.gtpl"); err != nil { panic(err) }
+      if err := templ.ExecuteTemplate(w, "error", token); err != nil { panic(err) }
     }
   }
 }

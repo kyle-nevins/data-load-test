@@ -1,8 +1,0 @@
----
-applications:
-  - name: go-server
-    command: data-load-test
-    buildpack: go_buildpack
-    env:
-      GOVERSION: go1.8
-      GOPACKAGENAME: data-load-test
